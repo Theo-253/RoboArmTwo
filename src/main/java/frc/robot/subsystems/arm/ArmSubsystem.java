@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,36 +23,26 @@ public class ArmSubsystem extends FullSubsystem {
 
   private Alert masterDisconnected;
 
-  @RequiredArgsConstructor
  
+  @RequiredArgsConstructor
   public enum Goal {
-    IDLE,
-    FORTYFIVE,
-    NINETY,
-    ONEEIGHTY,
-    TWOSEVENTY,
-    VOLTAGE;
+    IDLE(() -> 0.0),
+    FORTYFIVE(() -> Units.degreesToRotations(45)),
+    NINETY(() -> Units.degreesToRotations(90)),
+    ONEEIGHTY(() -> Units.degreesToRotations(180)),
+    TWOSEVENTY(() -> Units.degreesToRotations(270)),
+    VOLTAGE(() -> 1.00);
 
-  }
+    // Required Arguement for each enum state
+    private final DoubleSupplier angle;
 
-  private double getAsDouble(Goal currentGoal) {
-    switch (currentGoal) {
-      case IDLE:
-        return 0.0;
-      case NINETY:
-        return Units.degreesToRotations(90.0);
-      case FORTYFIVE:
-        return Units.degreesToRotations(45.0);
-      case ONEEIGHTY:
-        return Units.degreesToRotations(180.0);
-      case TWOSEVENTY:
-        return Units.degreesToRotations(270.0);
-      case VOLTAGE:
-        return 1;
-      default:
-        return 0.0;
+    /** Returns the current target voltage for this goal state. */
+    private double getGoal() {
+      return angle.getAsDouble();
     }
   }
+
+
 
   @AutoLogOutput(key = "Arm/Goal")
   private Goal currentGoal = Goal.IDLE;
@@ -77,17 +68,19 @@ public class ArmSubsystem extends FullSubsystem {
     // Re-poll the supplier every loop to handle new shot calculations
     if (currentGoal == Goal.IDLE) {
       stop();
+     // System.out.println("stopped");
     } else if (currentGoal == Goal.VOLTAGE) {
-      runVoltage(getAsDouble(currentGoal));
+      runVoltage(currentGoal.getGoal());
+      //System.out.println("running voltage");
     } else {
-      runAngular(getAsDouble(currentGoal));
+      runAngular(currentGoal.getGoal());
     }
   }
-
-  @Override
+@Override
   public void periodicAfterScheduler() {
     Logger.recordOutput("Arm/Mode", outputs.mode);
     io.applyOutputs(outputs);
+
   }
 
   /**
@@ -106,7 +99,7 @@ public class ArmSubsystem extends FullSubsystem {
    */
   public boolean atGoal() {
     return currentGoal == Goal.IDLE
-        || Math.abs(getAngle() - getAsDouble(currentGoal))
+        || Math.abs(getAngle() - currentGoal.getGoal())
             <= ArmConstants.closedLoopAngularTolerance;
   }
 
@@ -118,6 +111,8 @@ public class ArmSubsystem extends FullSubsystem {
   private void runAngular(double angleRads) {
     outputs.mode = ArmIOOutputMode.CLOSED_LOOP;
     outputs.positionRad = angleRads;
+    //System.out.println("running angular");
+
   }
 
   /**
@@ -138,26 +133,33 @@ public class ArmSubsystem extends FullSubsystem {
 
 
   public Command ninetyCommand() {
+    System.out.println("90");
     return startEnd(() -> setGoal(Goal.NINETY), () -> setGoal(Goal.IDLE)).withName("Arm Juggle");
   }
 
   public Command fortyFiveCommand() {
+        System.out.println("45");
     return startEnd(() -> setGoal(Goal.FORTYFIVE), () -> setGoal(Goal.IDLE)).withName("Arm Debug");
   }
 
   public Command oneEightyCommand() {
+        System.out.println("180");
     return startEnd(() -> setGoal(Goal.ONEEIGHTY), () -> setGoal(Goal.IDLE)).withName("Arm Static");
   }
 
   public Command twoSeventyCommand() {
+        System.out.println("270");
     return startEnd(() -> setGoal(Goal.TWOSEVENTY), () -> setGoal(Goal.IDLE))
         .withName("Arm Debug Voltage Up");
   }
 
     public Command voltageCommand() {
+        System.out.println("Volts");
     return startEnd(() -> setGoal(Goal.VOLTAGE), () -> setGoal(Goal.IDLE))
         .withName("VOltage Command");
+
   }
+
 
 
   public Command stopCommand() {
