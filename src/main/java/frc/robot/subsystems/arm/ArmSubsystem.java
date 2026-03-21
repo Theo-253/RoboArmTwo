@@ -24,32 +24,19 @@ public class ArmSubsystem extends FullSubsystem {
 
   @RequiredArgsConstructor
  
-  public enum Goal {
-    IDLE,
-    FORTYFIVE,
-    NINETY,
-    ONEEIGHTY,
-    TWOSEVENTY,
-    VOLTAGE;
+   public enum Goal {
+    IDLE(() -> 0.0),
+    NINETY(() -> Units.degreesToRotations(90)),
+    FORTYFIVE(() -> Units.degreesToRotations(45)),
+    TWOSEVENTY(() -> Units.degreesToRotations(270)),
+    ONEEIGHTY(() -> Units.degreesToRotations(180)),
+    VOLTAGE(() -> -0.5);
 
-  }
+    private final DoubleSupplier voltage;
 
-  private double getAsDouble(Goal currentGoal) {
-    switch (currentGoal) {
-      case IDLE:
-        return 0.0;
-      case NINETY:
-        return Units.degreesToRotations(90.0);
-      case FORTYFIVE:
-        return Units.degreesToRotations(45.0);
-      case ONEEIGHTY:
-        return Units.degreesToRotations(180.0);
-      case TWOSEVENTY:
-        return Units.degreesToRotations(270.0);
-      case VOLTAGE:
-        return 1;
-      default:
-        return 0.0;
+    /** Returns the current target voltage for this goal state. */
+    private double getGoal() {
+      return voltage.getAsDouble();
     }
   }
 
@@ -78,9 +65,9 @@ public class ArmSubsystem extends FullSubsystem {
     if (currentGoal == Goal.IDLE) {
       stop();
     } else if (currentGoal == Goal.VOLTAGE) {
-      runVoltage(getAsDouble(currentGoal));
+      runVoltage(currentGoal.getGoal());
     } else {
-      runAngular(getAsDouble(currentGoal));
+      runAngular(currentGoal.getGoal());
     }
   }
 
@@ -106,7 +93,7 @@ public class ArmSubsystem extends FullSubsystem {
    */
   public boolean atGoal() {
     return currentGoal == Goal.IDLE
-        || Math.abs(getAngle() - getAsDouble(currentGoal))
+        || Math.abs(getAngle() - currentGoal.getGoal())
             <= ArmConstants.closedLoopAngularTolerance;
   }
 
@@ -164,10 +151,16 @@ public class ArmSubsystem extends FullSubsystem {
     return runOnce(this::stop);
   }
 
-
+  public Command reZeroCommand() {
+    return runOnce(this::reZero);
+  }
 
   private void stop() {
     outputs.mode = ArmIOOutputMode.BRAKE;
+  }
+
+  private void reZero() {
+    io.zeroEncoders();
   }
 }
 

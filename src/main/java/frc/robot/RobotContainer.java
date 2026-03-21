@@ -59,7 +59,8 @@ m_driverController.b().whileTrue(armSubsystem.ninetyCommand());
 m_driverController.x().whileTrue(armSubsystem.oneEightyCommand());
 m_driverController.leftBumper().whileTrue(armSubsystem.twoSeventyCommand());
 m_driverController.rightBumper().whileTrue(armSubsystem.stopCommand());
-m_driverController.rightTrigger().whileFalse(armSubsystem.voltageCommand());
+m_driverController.povDown().whileTrue(armSubsystem.voltageCommand());
+m_driverController.povUp().whileTrue(armSubsystem.reZeroCommand());
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
