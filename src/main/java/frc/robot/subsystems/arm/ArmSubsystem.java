@@ -74,6 +74,7 @@ public class ArmSubsystem extends FullSubsystem {
       //System.out.println("running voltage");
     } else {
       runAngular(currentGoal.getGoal());
+      runAngular(currentGoal.getGoal());
     }
   }
 @Override
@@ -99,6 +100,7 @@ public class ArmSubsystem extends FullSubsystem {
    */
   public boolean atGoal() {
     return currentGoal == Goal.IDLE
+        || Math.abs(getAngle() - currentGoal.getGoal())
         || Math.abs(getAngle() - currentGoal.getGoal())
             <= ArmConstants.closedLoopAngularTolerance;
   }
@@ -166,10 +168,16 @@ public class ArmSubsystem extends FullSubsystem {
     return runOnce(this::stop);
   }
 
-
+  public Command reZeroCommand() {
+    return runOnce(this::reZero);
+  }
 
   private void stop() {
     outputs.mode = ArmIOOutputMode.BRAKE;
+  }
+
+  private void reZero() {
+    io.zeroEncoders();
   }
 }
 

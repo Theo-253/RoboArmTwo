@@ -43,7 +43,7 @@ public class ArmIOSpark implements ArmIO {
     masterNEOConfig
         .idleMode(IdleMode.kBrake)
         .inverted(false)
-        .smartCurrentLimit(35); // Current Limit reduced for safety
+        .smartCurrentLimit(50); // Current Limit reduced for safety
     masterNEOConfig
         .encoder
         .uvwMeasurementPeriod(
@@ -52,8 +52,8 @@ public class ArmIOSpark implements ArmIO {
     masterNEOConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(sparkMasterArmkP, sparkMasterArmkI, sparkMasterArmkD);
-
+        .pid(sparkMasterArmkP, sparkMasterArmkI, sparkMasterArmkD)
+        .positionWrappingEnabled(true);
     masterNEOConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -119,5 +119,9 @@ public class ArmIOSpark implements ArmIO {
   @Override
   public void runOpenLoop(double decimalPercentage) {
     masterNEO.set(decimalPercentage);
+  }
+  @Override
+  public void zeroEncoders() {
+    masterRelativeEncoder.setPosition(0);
   }
 }

@@ -31,4 +31,7 @@ public interface ArmIO {
   public default void applyOutputs(ArmIOOutputs outputs) {}
 
   default void runOpenLoop(double decimalPercentage) {}
+
+  default void zeroEncoders() {}
+
 }
