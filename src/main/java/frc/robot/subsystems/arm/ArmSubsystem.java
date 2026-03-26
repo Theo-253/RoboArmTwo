@@ -30,7 +30,7 @@ public class ArmSubsystem extends FullSubsystem {
     FORTYFIVE(() -> Units.degreesToRotations(45)),
     TWOSEVENTY(() -> Units.degreesToRotations(270)),
     ONEEIGHTY(() -> Units.degreesToRotations(180)),
-    VOLTAGE(() -> -0.5);
+    VOLTAGE(() -> -2);
 
     private final DoubleSupplier voltage;
 
