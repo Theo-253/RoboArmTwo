@@ -101,7 +101,6 @@ public class ArmSubsystem extends FullSubsystem {
   public boolean atGoal() {
     return currentGoal == Goal.IDLE
         || Math.abs(getAngle() - currentGoal.getGoal())
-        || Math.abs(getAngle() - currentGoal.getGoal())
             <= ArmConstants.closedLoopAngularTolerance;
   }
 

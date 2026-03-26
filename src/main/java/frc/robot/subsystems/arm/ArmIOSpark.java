@@ -97,17 +97,14 @@ public class ArmIOSpark implements ArmIO {
     switch (outputs.mode) {
       case BRAKE:
         masterNEO.stopMotor(); // Internal REV API calls "set(0);"
-       System.out.println("BreakMode");
         break;
       case CLOSED_LOOP:
         masterNEOController.setSetpoint(
             // kSlot0 is the default setting slot called in the config for pid
             outputs.positionRad, SparkBase.ControlType.kPosition);
-           System.out.println("closed_loop");
         break;
       case VOLTAGE:
         masterNEO.setVoltage(outputs.voltage);
-        System.out.println("volts");
     }
   }
 
