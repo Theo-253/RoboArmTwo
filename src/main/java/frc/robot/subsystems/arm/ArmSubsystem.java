@@ -31,7 +31,6 @@ public class ArmSubsystem extends FullSubsystem {
     NINETY(() -> Units.degreesToRotations(90)),
     ONEEIGHTY(() -> Units.degreesToRotations(180)),
     TWOSEVENTY(() -> Units.degreesToRotations(270)),
-    ONEEIGHTY(() -> Units.degreesToRotations(180)),
     VOLTAGE(() -> -2);
 
     // Required Arguement for each enum state
