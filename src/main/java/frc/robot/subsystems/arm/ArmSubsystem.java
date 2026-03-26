@@ -109,9 +109,9 @@ public class ArmSubsystem extends FullSubsystem {
    *
    * @param angleRads the new angular setpoint.
    */
-  private void runAngular(double angleRads) {
+  private void runAngular(double angleDeg) {
     outputs.mode = ArmIOOutputMode.CLOSED_LOOP;
-    outputs.positionRad = angleRads;
+    outputs.positionDegrees = angleDeg;
     //System.out.println("running angular");
 
   }

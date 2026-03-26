@@ -2,6 +2,8 @@ package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.util.Units;
+
 public interface ArmIO {
 @AutoLog
   public static class ArmIOInputs {
@@ -21,7 +23,7 @@ public interface ArmIO {
 
   public static class ArmIOOutputs {
     public ArmIOOutputMode mode = ArmIOOutputMode.BRAKE;
-    public double positionRad = 0.0;
+    public double positionDegrees = Units.rotationsToDegrees(0.0);
     public double velocityRadsPerSec = 0.0;
     public double voltage = 0.0;
   }
