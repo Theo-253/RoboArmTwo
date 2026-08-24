@@ -80,6 +80,7 @@ public class ArmSubsystem extends FullSubsystem {
 @Override
   public void periodicAfterScheduler() {
     Logger.recordOutput("Arm/Mode", outputs.mode);
+    Logger.recordOutput("Goal Position",outputs.positionRad);
     io.applyOutputs(outputs);
 
   }
@@ -109,9 +110,9 @@ public class ArmSubsystem extends FullSubsystem {
    *
    * @param angleRads the new angular setpoint.
    */
-  private void runAngular(double angleDeg) {
+  private void runAngular(double angleRad) {
     outputs.mode = ArmIOOutputMode.CLOSED_LOOP;
-    outputs.positionDegrees = angleDeg;
+    outputs.positionRad = angleRad;
     //System.out.println("running angular");
 
   }

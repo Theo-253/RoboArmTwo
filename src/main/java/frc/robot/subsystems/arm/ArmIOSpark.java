@@ -97,6 +97,7 @@ public class ArmIOSpark implements ArmIO {
     switch (outputs.mode) {
       case BRAKE:
         masterNEO.stopMotor(); // Internal REV API calls "set(0);"
+        outputs.positionRad = 0.0;
         break;
       case CLOSED_LOOP:
         masterNEOController.setSetpoint(
